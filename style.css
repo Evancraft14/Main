@@ -104,7 +104,7 @@ body.reveal-panorama::before {
 /* panorama action buttons (slide in from sides) */
 .panorama-actions {
   position: fixed;
-  top: 55vh;
+  top: 46vh; /* moved up */
   left: 0;
   right: 0;
   display: flex;
@@ -112,20 +112,21 @@ body.reveal-panorama::before {
   align-items: center;
   z-index: 5;
   pointer-events: none; /* columns enable pointer events */
-  transform: translateY(-55%);
+  transform: translateY(-50%);
+  --pan-img-height: 160px;
   max-width: 920px; /* bring groups closer to center */
   margin: 0 auto;
 }
 .panorama-actions .col {
   display: flex;
   flex-direction: column;
-  gap: 45px;
+  gap: 28px;
   padding: 0 12px;
   pointer-events: auto;
 }
 .panorama-actions .pan-btn {
-  width: 400px; /* wider */
-  padding: 70px 40px; /* taller */
+  width: 320px; /* balanced width */
+  padding: 20px 18px; /* less tall */
   border-radius: 10px;
   border: 1px solid rgba(255,255,255,0.14);
   background: rgba(255,255,255,0.06);
@@ -137,28 +138,72 @@ body.reveal-panorama::before {
   backdrop-filter: blur(4px);
 }
 
-/* initial off-screen positions + transitions */
-.panorama-actions .col.left .pan-btn {
+/* left column image styling (match right column) */
+.panorama-actions .col.left {
+  align-items: center; /* center column children */
+}
+
+/* initial off-screen positions + transitions for all column children (images and buttons) */
+.panorama-actions .col.left > * {
   transform: translateX(-80px);
   opacity: 0;
   transition: transform 420ms cubic-bezier(.2,.9,.2,1), opacity 320ms ease;
 }
-.panorama-actions .col.right .pan-btn {
+.panorama-actions .col.right > * {
   transform: translateX(80px);
   opacity: 0;
   transition: transform 420ms cubic-bezier(.2,.9,.2,1), opacity 320ms ease;
 }
 
-/* when panorama revealed, slide buttons in with stagger */
-body.reveal-panorama .panorama-actions .col.left .pan-btn:nth-child(1) { transition-delay: 80ms; transform: translateX(0); opacity: 1; }
-body.reveal-panorama .panorama-actions .col.left .pan-btn:nth-child(2) { transition-delay: 160ms; transform: translateX(0); opacity: 1; }
-body.reveal-panorama .panorama-actions .col.left .pan-btn:nth-child(3) { transition-delay: 240ms; transform: translateX(0); opacity: 1; }
-body.reveal-panorama .panorama-actions .col.left .pan-btn:nth-child(4) { transition-delay: 320ms; transform: translateX(0); opacity: 1; }
+/* image styling for category icons */
+.panorama-actions .pan-img {
+  height: var(--pan-img-height);
+  width: auto;
+  max-width: 420px;
+  object-fit: contain;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.04);
+  display: block;
+}
 
-body.reveal-panorama .panorama-actions .col.right .pan-btn:nth-child(1) { transition-delay: 120ms; transform: translateX(0); opacity: 1; }
-body.reveal-panorama .panorama-actions .col.right .pan-btn:nth-child(2) { transition-delay: 200ms; transform: translateX(0); opacity: 1; }
-body.reveal-panorama .panorama-actions .col.right .pan-btn:nth-child(3) { transition-delay: 280ms; transform: translateX(0); opacity: 1; }
-body.reveal-panorama .panorama-actions .col.right .pan-btn:nth-child(4) { transition-delay: 360ms; transform: translateX(0); opacity: 1; }
+/* centered logo above the columns */
+.panorama-actions .panorama-logo {
+  position: absolute;
+  left: 50%;
+  top: -140px; /* raise logo higher above the actions */
+  transform: translateX(-50%);
+  z-index: 6;
+  pointer-events: none;
+}
+.panorama-actions .panorama-logo img {
+  width: 120px; /* smaller logo */
+  height: auto;
+  display: block;
+  object-fit: contain;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.03);
+  transform: translateY(-12px);
+  opacity: 0;
+  transition: transform 420ms cubic-bezier(.2,.9,.2,1), opacity 420ms ease;
+}
+
+/* when panorama revealed, slide items in with stagger (1..4) */
+body.reveal-panorama .panorama-actions .panorama-logo img { transform: translateY(0); opacity: 1; transition-delay: 40ms; }
+
+body.reveal-panorama .panorama-actions .col.left > *:nth-child(1) { transition-delay: 120ms; transform: translateX(0); opacity: 1; }
+body.reveal-panorama .panorama-actions .col.left > *:nth-child(2) { transition-delay: 200ms; transform: translateX(0); opacity: 1; }
+body.reveal-panorama .panorama-actions .col.left > *:nth-child(3) { transition-delay: 280ms; transform: translateX(0); opacity: 1; }
+body.reveal-panorama .panorama-actions .col.left > *:nth-child(4) { transition-delay: 360ms; transform: translateX(0); opacity: 1; }
+
+/* make Modrinth image larger and centered in its column */
+.panorama-actions .col.right {
+  align-items: center; /* center column children */
+}
+
+body.reveal-panorama .panorama-actions .col.right > *:nth-child(1) { transition-delay: 160ms; transform: translateX(0); opacity: 1; }
+body.reveal-panorama .panorama-actions .col.right > *:nth-child(2) { transition-delay: 240ms; transform: translateX(0); opacity: 1; }
+body.reveal-panorama .panorama-actions .col.right > *:nth-child(3) { transition-delay: 320ms; transform: translateX(0); opacity: 1; }
+body.reveal-panorama .panorama-actions .col.right > *:nth-child(4) { transition-delay: 400ms; transform: translateX(0); opacity: 1; }
 
 /* fallback audio play button */
 .audio-play-btn {

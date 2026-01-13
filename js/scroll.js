@@ -100,6 +100,47 @@
     }
   }
 
+  // populate Modrinth buttons with user's most recent projects
+  async function populateModrinthButtons(userId = 'WJR5rZMZ') {
+    try {
+      const buttons = Array.from(document.querySelectorAll('.panorama-actions .col.right .pan-btn'));
+      if (!buttons.length) return;
+      // show loading state
+      buttons.forEach(b => { b.textContent = 'Loading…'; b.disabled = true; });
+
+      const res = await fetch(`https://api.modrinth.com/v2/user/${userId}/projects`);
+      if (!res.ok) return;
+      const projects = await res.json();
+      if (!Array.isArray(projects) || projects.length === 0) return;
+      // sort by most recently modified or created
+      projects.sort((a, b) => {
+        const ta = new Date(a.date_modified || a.date_created || 0).getTime();
+        const tb = new Date(b.date_modified || b.date_created || 0).getTime();
+        return tb - ta;
+      });
+      for (let i = 0; i < buttons.length; i++) {
+        const btn = buttons[i];
+        const project = projects[i];
+        if (!project) { btn.style.display = 'none'; btn.disabled = true; continue; }
+        btn.style.display = '';
+        btn.disabled = false;
+        const title = project.title || project.slug || 'Project';
+        btn.textContent = title;
+        const url = `https://modrinth.com/project/${project.slug}`;
+        btn.onclick = () => window.open(url, '_blank', 'noopener');
+      }
+    } catch (e) {
+      // fallback: assign buttons to the user's profile so they still do something
+      const buttons = Array.from(document.querySelectorAll('.panorama-actions .col.right .pan-btn'));
+      const profileUrl = `https://modrinth.com/user/${userId}`;
+      buttons.forEach(b => {
+        b.textContent = 'View profile';
+        b.disabled = false;
+        b.onclick = () => window.open(profileUrl, '_blank', 'noopener');
+      });
+    }
+  }
+
   function onScroll() {
     latestScroll = window.scrollY || window.pageYOffset;
     if (!ticking) {
@@ -119,6 +160,8 @@
   } else {
     window.addEventListener('DOMContentLoaded', runInitialScroll, { once: true });
   }
+
+  // (modrinth buttons are now static links in HTML)
 
   // ------------------ background audio autoplay with fallback ------------------
   (function () {
