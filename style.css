@@ -45,11 +45,11 @@ body::before {
 }
 
 .brand {
-  --spacing-start: 0.3; /* em at top */
-  --spacing-end: 0.02;   /* em at scroll target */
+  --spacing-start: 0.1; /* em at top */
+  --spacing-end: 1;   /* em at scroll target */
   --spacing: var(--spacing-start);
   --stretch-start: 1.25;
-  --stretch-end: 1.0;
+  --stretch-end: 2.0;
   --shift: 40px; /* small rightward visual nudge */
   --stretch: var(--stretch-start);
 
